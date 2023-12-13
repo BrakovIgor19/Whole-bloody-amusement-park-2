@@ -115,7 +115,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../libpqxx/lib; C:\Program Files\PostgreSQL\15\lib;</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../libpqxx/lib; C:\Program Files\PostgreSQL\16\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>libpq.lib;pqxx.lib;ws2_32.lib;wsock32.lib;</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

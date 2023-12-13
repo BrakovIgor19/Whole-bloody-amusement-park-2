@@ -3,7 +3,9 @@
 
 enum class MessageTypes : uint8_t
 {
-	MT_INIT,
+	MT_AUTHORIZATION,
+	MT_AUTHORIZATION_FAILED,
+	MT_AUTHORIZATION_SUCCESS,
 	MT_EXIT,
 	MT_GETDATA,
 	MT_DATA,
@@ -49,8 +51,8 @@ public:
 	explicit Message(size_t from, MessageTypes type, const string& data);
 	explicit Message(size_t to, const string& data);
 	explicit Message(MessageTypes type);
-	const MessageHeader& GetHeader();
-	const string& GetDate();
+	MessageHeader GetHeader();
+	string GetDate();
 private: 
 	MessageHeader header; 
 	string data;

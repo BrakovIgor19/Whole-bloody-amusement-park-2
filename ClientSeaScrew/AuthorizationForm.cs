@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -16,122 +17,66 @@ namespace ClientSeaScrew
 {
     public partial class AuthorizationForm : Form
     {
-        private int id;
+        public ChatForm chatForm;
+        public RegistrationForm registrationForm;
+        public ProfileForm profileForm;
+        public Client client;
+        public AutoResetEvent ev;
 
-
-        private ChatForm chatForm;
-        private RegistrationForm registrationForm;
-
-        Socket sockIn;
-        Socket sockOut;
-
-        private CancellationTokenSource _cancelationTokenSourceOut;
-        private CancellationToken _tokenOut;
-        private CancellationTokenSource _cancelationTokenSourceIn;
-        private CancellationToken _tokenIn;
-
-        private bool isValid = false;
-
-        public AutoResetEvent closeEvent;
-        public AutoResetEvent lastCloseEvent;
+        public Regex rgxMail = new Regex(@"^[-\w.]+@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,4}$"); // само регулярное выражение
 
         public AuthorizationForm()
         {
-            closeEvent = new AutoResetEvent(false);
-            lastCloseEvent = new AutoResetEvent(false);
+            ev = new AutoResetEvent(false);
             chatForm = new ChatForm(this);
             registrationForm = new RegistrationForm(this);
+            profileForm = new ProfileForm(this);
             InitializeComponent();
-            int nPort = 1000 - 7;
-            IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), nPort);
-
-            _cancelationTokenSourceIn = new CancellationTokenSource();
-            _tokenIn = _cancelationTokenSourceIn.Token;
-            Task.Run(() =>
-            {
-                sockIn = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                sockIn.Connect(endPoint);
-                if (!sockIn.Connected)
-                {
-                    throw new Exception("Connection error");
-                }
-                closeEvent.WaitOne();
-                _cancelationTokenSourceOut.Cancel();
-                closeEvent.WaitOne();
-                _cancelationTokenSourceOut.Dispose();
-                sockIn.Close();
-                lastCloseEvent.Set();
-            });
-
-            // Модные таски по советам Марата
-            _cancelationTokenSourceOut = new CancellationTokenSource();
-            _tokenOut = _cancelationTokenSourceOut.Token;
-            Task.Run(() =>
-            {
-                sockOut = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                sockOut.Connect(endPoint);
-                if (!sockIn.Connected)
-                {
-                    throw new Exception("Connection error");
-                }
-                while (!_tokenOut.IsCancellationRequested)
-                {
-                    Message m = ReceiveMessage(sockOut);
-                }
-                sockOut.Close();
-                closeEvent.Set();
-            });
+            InitializeControls();
+            
         }
-        public void SendMessage(Socket s, Message m)
+
+        public void ExitToAthorization()
         {
-            s.Send(m.toBytes(m.header), Marshal.SizeOf(m.header), SocketFlags.None);
-            if (m.header.size != 0)
-            {
-                s.Send(m.get866().GetBytes(m.data), m.header.size, SocketFlags.None);
-            }
-        }
-
-        public Message ReceiveMessage(Socket s)
-        {
-            Message m = new Message();
-            byte[] buff = new byte[Marshal.SizeOf(m.header)];
-            if (s.Receive(buff, Marshal.SizeOf(m.header), SocketFlags.None) != 0)
-            {
-
-                m.header = m.fromBytes<MessageHeader>(buff);
-                if (m.header.size > 0)
+            if (client != null && client.isValid) {
+            
+                Task t = Task.Run(() =>
                 {
-                    byte[] b = new byte[m.header.size];
-                    s.Receive(b, m.header.size, SocketFlags.None);
-                    m.data = m.get866().GetString(b, 0, m.header.size);
-
-                }
+                    client.Close();
+                });
+                t.Wait();
             }
-            else
-            {
-                throw new Exception("error receive message");
-            }
-            return m;
         }
+        private void InitializeControls()
+        {
+            // Set to no text.
+            textBoxPassword.Text = "";
+            // The password character is an asterisk.
+            textBoxPassword.PasswordChar = '*';
+            // The control will allow no more than 32 characters.
+            textBoxPassword.MaxLength = 32;
 
+            textBoxMail.Text = "";
+            textBoxMail.MaxLength = 64;
+        }
         public void CloseAll()
         {
             //Message m = Message(id, 0, MessageTypes.MT_EXIT, "");
             //Send(sockIn, Message(id, 0, MessageTypes.MT_EXIT, ""));
-            closeEvent.Set();
-            lastCloseEvent.WaitOne();
-            Application.Exit();
+            if (client != null)
+            {
+                //CancellationTokenSource bufTok = new CancellationTokenSource();
+                //CancellationToken canBuf = bufTok.Token;
+                ExitToAthorization();
+                Application.Exit();
+                
+            }
             /*chatForm.Show();
             chatForm.Close();
             registrationForm.Show();
             registrationForm.Close();
             this.Show();
             this.Close();*/
-        }
-        private void button1_Click(object sender, EventArgs e)
-        {
-            this.Hide();
-            chatForm.Show();
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -142,7 +87,59 @@ namespace ClientSeaScrew
 
         private void AuthorizationForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            CloseAll();
+            // CloseAll();
+            //registrationForm.Close();
+            // chatForm.Close();
+            //Close();
+            //this.Cancel
+            //Environment.Exit(0);
+            if (client != null && client.isValid)
+            {
+                CloseAll();
+            }
         }
+
+        private void buttonEnter_Click(object sender, EventArgs e)
+        {
+            //client = new Client(this, chatForm, registrationForm);
+            if (rgxMail.IsMatch(textBoxMail.Text))
+            {
+                if (textBoxPassword.Text != string.Empty)
+                { 
+                    client = new Client(this, chatForm, registrationForm);
+                    client.eventType = EventTypes.ET_AUTHORIZATION;
+                    client.ev.Set();
+                    ev.WaitOne();
+                    if (client.isValid)
+                    {
+                        textBoxMail.Text = string.Empty;
+                        textBoxPassword.Text = string.Empty;
+                        labelErrorAuthorization.Text = string.Empty;
+                        profileForm.labelLastname.Text = client.lastName;
+                        profileForm.labelFirstName.Text = client.firstName;
+                        profileForm.pictureBoxAvatar.Image = Image.FromFile("../../../Resource/Avatars/" + client.nameAvatar);
+                        this.Hide();
+                        client.isValid = false;
+                        chatForm.Show();
+                        ev.WaitOne();
+                        client.isValid = true;
+                        //chatForm.PlayUpdate();
+                    }
+                    else
+                    {
+                        labelErrorAuthorization.Text = "Неверная почта или пароль!";
+                    }
+                }
+                else
+                {
+                    labelErrorAuthorization.Text = "Введите пароль!";
+                }
+            }
+            else
+            {
+                labelErrorAuthorization.Text = "Неверный формат почты!";
+            }
+        }
+
     }
 }

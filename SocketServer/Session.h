@@ -7,7 +7,7 @@ class Session
 public:
 
 	//CCriticalSection cs;
-	explicit Session(string name);
+	explicit Session(string firstName, string lastName);
 
 	explicit Session();
 
@@ -35,7 +35,10 @@ public:
 	//}
 private:
 	bool isValid;
-	string name;
+	size_t id;
+	string firstName;
+	string lastName;
+	string nameAvatar;
 	queue<Message> messages;
 	Channel<bool> chan;
 	Channel<bool> chanUpdate;

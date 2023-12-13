@@ -9,7 +9,7 @@ WindowChat::WindowChat(size_t left, size_t top, size_t right, size_t bottom, cha
 }
 
 WindowChat::WindowChat() :
-    left(2), top(2), right(40), bottom(15), frameSymbol('#'), height(bottom - top - 1), width(right - left - 1), isDisp(false)
+    left(2), top(2), right(80), bottom(20), frameSymbol('#'), height(bottom - top - 1), width(right - left - 1), isDisp(false)
 {
     history.reserve(150);
 }

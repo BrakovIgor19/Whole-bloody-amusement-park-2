@@ -3,7 +3,7 @@
 
 
 
-Session::Session(string name) : name(name), isValid(true)
+Session::Session(string firstName, string lastName) : firstName(firstName), lastName(lastName), isValid(true)
 {
 	//hEventUpdateDataClient = CreateEvent(NULL, TRUE, FALSE, string("UpdateEvent" + name).c_str());
 	hEventUpdateDataClient = CreateEvent(
@@ -20,7 +20,7 @@ Session::Session(string name) : name(name), isValid(true)
 	);
 }
 
-Session::Session() : name("No name"), isValid(true)
+Session::Session() : firstName("No firstname"), lastName("No lastname"), isValid(true)
 {
 	hEventUpdateDataClient = CreateEvent(
 		NULL, // атрибуты защиты

@@ -45,7 +45,7 @@
             // 
             this.buttonRegistr.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.buttonRegistr.Font = new System.Drawing.Font("Consolas", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonRegistr.Location = new System.Drawing.Point(143, 444);
+            this.buttonRegistr.Location = new System.Drawing.Point(85, 442);
             this.buttonRegistr.Name = "buttonRegistr";
             this.buttonRegistr.Size = new System.Drawing.Size(293, 65);
             this.buttonRegistr.TabIndex = 0;
@@ -57,7 +57,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Consolas", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(152, 177);
+            this.label1.Location = new System.Drawing.Point(94, 175);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(77, 27);
             this.label1.TabIndex = 1;
@@ -67,7 +67,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Consolas", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.Location = new System.Drawing.Point(152, 255);
+            this.label2.Location = new System.Drawing.Point(94, 253);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(168, 27);
             this.label2.TabIndex = 2;
@@ -77,7 +77,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Consolas", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label3.Location = new System.Drawing.Point(152, 334);
+            this.label3.Location = new System.Drawing.Point(94, 332);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(298, 27);
             this.label3.TabIndex = 3;
@@ -87,7 +87,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Consolas", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label4.Location = new System.Drawing.Point(152, 20);
+            this.label4.Location = new System.Drawing.Point(94, 18);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(51, 27);
             this.label4.TabIndex = 4;
@@ -97,7 +97,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Consolas", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label5.Location = new System.Drawing.Point(164, 98);
+            this.label5.Location = new System.Drawing.Point(94, 96);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(103, 27);
             this.label5.TabIndex = 5;
@@ -106,7 +106,7 @@
             // textBoxMail
             // 
             this.textBoxMail.Font = new System.Drawing.Font("Consolas", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBoxMail.Location = new System.Drawing.Point(157, 218);
+            this.textBoxMail.Location = new System.Drawing.Point(99, 216);
             this.textBoxMail.Name = "textBoxMail";
             this.textBoxMail.Size = new System.Drawing.Size(263, 34);
             this.textBoxMail.TabIndex = 6;
@@ -114,7 +114,7 @@
             // textBoxFirstname
             // 
             this.textBoxFirstname.Font = new System.Drawing.Font("Consolas", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBoxFirstname.Location = new System.Drawing.Point(157, 50);
+            this.textBoxFirstname.Location = new System.Drawing.Point(99, 48);
             this.textBoxFirstname.Name = "textBoxFirstname";
             this.textBoxFirstname.Size = new System.Drawing.Size(263, 34);
             this.textBoxFirstname.TabIndex = 7;
@@ -122,7 +122,7 @@
             // textBoxSecondname
             // 
             this.textBoxSecondname.Font = new System.Drawing.Font("Consolas", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBoxSecondname.Location = new System.Drawing.Point(157, 128);
+            this.textBoxSecondname.Location = new System.Drawing.Point(99, 126);
             this.textBoxSecondname.Name = "textBoxSecondname";
             this.textBoxSecondname.Size = new System.Drawing.Size(263, 34);
             this.textBoxSecondname.TabIndex = 8;
@@ -130,7 +130,7 @@
             // textBoxPassword
             // 
             this.textBoxPassword.Font = new System.Drawing.Font("Consolas", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBoxPassword.Location = new System.Drawing.Point(157, 285);
+            this.textBoxPassword.Location = new System.Drawing.Point(99, 283);
             this.textBoxPassword.Name = "textBoxPassword";
             this.textBoxPassword.Size = new System.Drawing.Size(263, 34);
             this.textBoxPassword.TabIndex = 9;
@@ -138,7 +138,7 @@
             // textBoxPasswordRepeat
             // 
             this.textBoxPasswordRepeat.Font = new System.Drawing.Font("Consolas", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBoxPasswordRepeat.Location = new System.Drawing.Point(157, 374);
+            this.textBoxPasswordRepeat.Location = new System.Drawing.Point(99, 372);
             this.textBoxPasswordRepeat.Name = "textBoxPasswordRepeat";
             this.textBoxPasswordRepeat.Size = new System.Drawing.Size(263, 34);
             this.textBoxPasswordRepeat.TabIndex = 10;
@@ -148,7 +148,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.ClientSize = new System.Drawing.Size(613, 555);
+            this.ClientSize = new System.Drawing.Size(508, 555);
             this.Controls.Add(this.textBoxPasswordRepeat);
             this.Controls.Add(this.textBoxPassword);
             this.Controls.Add(this.textBoxSecondname);
@@ -160,6 +160,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.buttonRegistr);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "RegistrationForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "vk1000-7";

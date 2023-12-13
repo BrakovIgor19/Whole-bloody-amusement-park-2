@@ -21,13 +21,17 @@ namespace ClientSeaScrew
 
         private void buttonRegistr_Click(object sender, EventArgs e)
         {
+            //authorizationForm.ExitToAthorization();
             this.Hide();
             authorizationForm.Show();
         }
 
         private void RegistrationForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            authorizationForm.CloseAll();
+            if (authorizationForm.client != null && authorizationForm.client.isValid)
+            {
+                authorizationForm.CloseAll();
+            }
         }
     }
 }

@@ -43,7 +43,7 @@ Message::Message(size_t from, MessageTypes type, const string& data) :
 }
 
 Message::Message(size_t to, const string& data) :
-	header{ to, 0, static_cast<size_t>(MT_INIT), data.size() },
+	//header{ to, 0, static_cast<size_t>(MT_INIT), data.size() },
 	data(data)
 {
 }
@@ -54,12 +54,12 @@ Message::Message(MessageTypes type) :
 {
 }
 
-const MessageHeader& Message::GetHeader()
+MessageHeader Message::GetHeader()
 {
 	return header;
 }
 
-const string& Message::GetDate()
+string Message::GetDate()
 {
 	return data;
 }

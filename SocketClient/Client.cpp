@@ -98,7 +98,7 @@ Client::Client() //: isValid(true)
 	// ѕытаемс€ авторизоватьс€
 	TCHAR title[MAX_PATH];
 	GetConsoleTitle(title, MAX_PATH);
-	chan.Send(Message(MT_INIT, string(title)));
+	//chan.Send(Message(MT_INIT, string(title)));
 	Message m = chan.Receive();
 	if (m.GetDate()[0] == '0')
 	{

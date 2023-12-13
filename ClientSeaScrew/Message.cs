@@ -11,7 +11,9 @@ namespace ClientSeaScrew
 {
     public enum MessageTypes : byte
     {
-        MT_INIT,
+        MT_AUTHORIZATION,
+        MT_AUTHORIZATION_FAILED,
+        MT_AUTHORIZATION_SUCCESS,
         MT_EXIT,
         MT_GETDATA,
         MT_DATA,
@@ -27,14 +29,14 @@ namespace ClientSeaScrew
     [StructLayout(LayoutKind.Sequential)]
     public struct MessageHeader
     {
-        [MarshalAs(UnmanagedType.I4)]
-        public uint to;
-        [MarshalAs(UnmanagedType.I4)]
-        public uint from;
-        [MarshalAs(UnmanagedType.I4)]
-        public MessageTypes type;
-        [MarshalAs(UnmanagedType.I4)]
-        public int size;
+        [MarshalAs(UnmanagedType.I8)]
+        public ulong to;
+        [MarshalAs(UnmanagedType.I8)]
+        public ulong from;
+        [MarshalAs(UnmanagedType.I8)]
+        public ulong type;
+        [MarshalAs(UnmanagedType.I8)]
+        public ulong size;
     };
 
     public class Message
@@ -48,7 +50,7 @@ namespace ClientSeaScrew
             if (cp866 is null)
             {
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-                cp866 = Encoding.GetEncoding("CP866");
+                cp866 = Encoding.GetEncoding(1251);
             }
             return cp866;
         }
@@ -57,7 +59,7 @@ namespace ClientSeaScrew
         public Message(uint to, uint from, MessageTypes type, string data)
         {
             this.data = data;
-            header = new MessageHeader() { to = to, from = from, type = type, size = data.Length };
+            header = new MessageHeader() { to = to, from = from, type = (ulong)type, size = (ulong)data.Length };
         }
         public Message()
         {

@@ -93,16 +93,11 @@ namespace Csharp
                     //SetWindowText(Clients[textBox1.Text].MainWindowHandle, textBox1.Text);
                     Random rnd = new Random();
 
-                    this.textBox1.Text = legendHuman[rnd.Next(legendHuman.Length)];
+                    //this.textBox1.Text = legendHuman[rnd.Next(legendHuman.Length)];
                 //}
             }
         }
 
-
-        private void UpdateTextBox(object sender, EventArgs e)
-        {
-            textBox1.Text = comboBoxClients.Text;
-        }
 
         private void buttonCreateClientSeaScrew_Click(object sender, EventArgs e)
         {
@@ -111,6 +106,20 @@ namespace Csharp
                 Process p = Process.Start("ClientSeaScrew.exe");
                 //Thread.Sleep(3000);
                 //SetWindowText(p.MainWindowHandle, textBox1.Text);
+
+            }
+        }
+
+        private void UpdateTextBox(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttonCreateClientSatan_Click(object sender, EventArgs e)
+        {
+            if (conditionServer)
+            {
+                Process p = Process.Start("ClientGo.exe");
 
             }
         }
