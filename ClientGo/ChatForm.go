@@ -30,8 +30,8 @@ func NewChatForm() ChatForm {
 
 	chF.LastNameLabel = widget.NewLabel("Фамилия")
 
-	img, _ := fyne.LoadResourceFromPath("../../../Resource/Avatars/default.jpg")
-	chF.AvaImage = canvas.NewImageFromResource(img)
+	//img, _ := fyne.LoadResourceFromPath("../../../Resource/Avatars/default.jpg")
+	//chF.AvaImage = canvas.NewImageFromResource(img)
 
 	chF.WinChatEntry = widget.NewMultiLineEntry()
 	chF.WinChatEntry.SetPlaceHolder("Чат")
@@ -57,7 +57,7 @@ func NewChatForm() ChatForm {
 		3,
 		chF.FirtsNameLabel,
 		chF.LastNameLabel,
-		chF.AvaImage,
+		//chF.AvaImage,
 		chF.WinChatEntry,
 		chF.InputMessageEntry,
 		chF.SendButton,

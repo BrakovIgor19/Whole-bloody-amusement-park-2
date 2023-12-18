@@ -8,6 +8,7 @@ import (
 	"sync"
 )
 
+// Сигналы клиенту от основного потока
 const (
 	ET_AUTHORIZATION = iota
 	ET_FAILED_AUTHORIZATION
@@ -22,49 +23,48 @@ type Client struct {
 	NameAvatar string
 
 	CacheConversations map[uint]string
-	SelectItemToIdConv map[uint]uint
+	SelectItemToIdConv []uint
 	History            map[uint][]string
 
 	ChanIn  net.Conn
 	ChanOut net.Conn
 
 	IsValid bool
-
-	wg sync.WaitGroup
 }
 
 func NewClient() Client {
 	var client Client
 	client.History = make(map[uint][]string, 100)
 	client.IsValid = true
-	client.wg.Add(1)
 	return client
 }
 
-func (client *Client) Process(ch chan int, ch2 chan int, ch3 chan string, wg *sync.WaitGroup, wg2 *sync.WaitGroup, chatForm *ChatForm, authorizationForm *AuthorizationForm) {
+func (client *Client) Process(chClient_MainThread chan any, chEventToMainThread chan int) {
 
-	var wgs sync.WaitGroup
-	wgs.Add(1)
+	var wgForSyncFibers sync.WaitGroup
+	wgForSyncFibers.Add(1)
+	var wgCloseClient sync.WaitGroup
+	wgCloseClient.Add(2)
 	var err error
 	go func() {
-		defer wg2.Done()
+		defer wgCloseClient.Done()
 		if client.ChanOut, err = net.Dial("tcp", "localhost:993"); err != nil {
 			log.Println("Server connection error")
 			panic(err)
 		} else {
 			defer client.ChanOut.Close()
-			wgs.Done()
-			wg.Done()
+			wgForSyncFibers.Done()
 			for {
-				client.wg.Wait()
-				client.wg.Add(1)
+
 				if !client.IsValid {
 					break
 				}
-				switch <-ch {
+				switch (<-chClient_MainThread).(int) {
 
 				case ET_AUTHORIZATION:
-					bufStr := authorizationForm.EmailEntry.Text + ";" + authorizationForm.PasswordEntry.Text
+					bufMail := (<-chClient_MainThread).(string)
+					bufPassword := (<-chClient_MainThread).(string)
+					bufStr := bufMail + ";" + bufPassword
 					client.Send(client.ChanOut, NewMessage(0, 0, MT_AUTHORIZATION, bufStr))
 					var m Message = client.Receive(client.ChanOut)
 					if m.Header.Type == MT_AUTHORIZATION_SUCCESS {
@@ -77,15 +77,15 @@ func (client *Client) Process(ch chan int, ch2 chan int, ch3 chan string, wg *sy
 						client.FirstName = dataClient[1]
 						client.LastName = dataClient[2]
 						client.NameAvatar = dataClient[3]
-						ch <- ET_AUTHORIZATION
+						chClient_MainThread <- ET_AUTHORIZATION
 					} else {
 						client.IsValid = false
-						ch <- ET_FAILED_AUTHORIZATION
+						chClient_MainThread <- ET_FAILED_AUTHORIZATION
 					}
 
 				case ET_SEND_MESSAGE:
-					idConv := <-ch
-					bufStr := <-ch3
+					idConv := (<-chClient_MainThread).(int)
+					bufStr := (<-chClient_MainThread).(string)
 					client.Send(client.ChanOut, NewMessage(int64(idConv), int64(client.Id), MT_MESSAGE, bufStr))
 					_ = client.Receive(client.ChanOut)
 					client.History[uint(idConv)] = append(client.History[uint(idConv)], client.FirstName+" "+client.LastName+": "+bufStr)
@@ -94,19 +94,16 @@ func (client *Client) Process(ch chan int, ch2 chan int, ch3 chan string, wg *sy
 					client.IsValid = false
 					client.Send(client.ChanOut, NewMessage(0, 0, MT_EXIT, ""))
 					_ = client.Receive(client.ChanOut)
-					client.wg.Done()
 
 				}
-
-				wg.Done()
 
 			}
 		}
 	}()
 
 	go func() {
-		defer wg2.Done()
-		wgs.Wait()
+		defer wgCloseClient.Done()
+		wgForSyncFibers.Wait()
 		if client.ChanIn, err = net.Dial("tcp", "localhost:993"); err != nil {
 			log.Println("Server connection error")
 			panic(err)
@@ -122,7 +119,7 @@ func (client *Client) Process(ch chan int, ch2 chan int, ch3 chan string, wg *sy
 				case MT_UPDATE_USER_LIST:
 					stringsBuf := strings.Split(m.Data, ";")
 					client.CacheConversations = make(map[uint]string, 100)
-					client.SelectItemToIdConv = make(map[uint]uint, 100)
+					client.SelectItemToIdConv = make([]uint, len(stringsBuf)/2)
 					i := 0
 					j := 0
 					for i < len(stringsBuf)-1 {
@@ -132,29 +129,25 @@ func (client *Client) Process(ch chan int, ch2 chan int, ch3 chan string, wg *sy
 						i += 2
 						j++
 					}
-					ch2 <- UPDATE_USER_LIST
+					chEventToMainThread <- UPDATE_USER_LIST
 				case MT_MESSAGE:
-
 					if _, ok := client.History[uint(m.Header.To)]; ok {
 						client.History[uint(m.Header.To)] = append(client.History[uint(m.Header.To)], m.Data)
 					} else {
 						client.History[uint(m.Header.To)] = []string{}
 						client.History[uint(m.Header.To)] = append(client.History[uint(m.Header.To)], m.Data)
 					}
-					ch2 <- UPDATE_MESSAGE
-					ch <- int(m.Header.To)
+
+					chEventToMainThread <- UPDATE_MESSAGE
+					chClient_MainThread <- int(m.Header.To)
 				case MT_EXIT:
-
 				}
-
 			}
 		}
 	}()
-	wg2.Wait()
-	//wg.Done()
-}
-
-func (client *Client) Close() {
+	wgCloseClient.Wait()
+	chClient_MainThread <- struct{}{}
+	log.Println("Завершение всех потоков на клиенте")
 
 }
 

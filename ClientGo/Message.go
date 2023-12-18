@@ -42,6 +42,7 @@ func (h MsgHeader) Send(conn net.Conn) {
 
 func (h *MsgHeader) Receive(conn net.Conn) {
 	buff := make([]byte, unsafe.Sizeof(*h))
+
 	_, err := conn.Read(buff)
 	if err == nil {
 		binary.Read(bytes.NewBuffer(buff), binary.LittleEndian, h)
